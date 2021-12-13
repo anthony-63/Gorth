@@ -24,6 +24,6 @@ func (s *Stack) pop() int {
 		s.stack = s.stack[:len-1]
 		return v
 	}
-	GorthError("Stack underflow")
+	GorthError("Stack underflow", SourceLine{})
 	return -1
 }

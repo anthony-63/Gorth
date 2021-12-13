@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -24,12 +25,28 @@ type IArgsCount struct {
 	Count int
 }
 
+type SourceLine struct {
+	file string
+	data string
+	line int
+}
+
 func loadfile(file string) []IArg {
 	var finished []IArg
 	datab, _ := ioutil.ReadFile(file)
-	words := strings.Fields(string(datab))
-	for _, e := range words {
-		finished = append(finished, parse_word_as_op(e))
+	words := strings.Split(string(datab), "\n")
+	var srcLines []SourceLine
+	for i, e := range words {
+		srcLines = append(srcLines, SourceLine{
+			os.Args[2],
+			e,
+			i,
+		})
+	}
+	for _, e := range srcLines {
+		for _, f := range strings.Fields(e.data) {
+			finished = append(finished, parse_word_as_op(f, e))
+		}
 	}
 	return finished
 }
@@ -64,7 +81,7 @@ func run(prog []IArg) {
 			a := stack.pop()
 			fmt.Println(a)
 		default:
-			GorthError("Unreachable")
+			GorthError("Unreachable", SourceLine{})
 		}
 	}
 }

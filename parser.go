@@ -21,7 +21,7 @@ func loadgxml(file string) []IArg {
 	return finished[:len(finished)-1]
 }
 
-func parse_word_as_op(word string) IArg {
+func parse_word_as_op(word string, line SourceLine) IArg {
 	switch word {
 	case "+":
 		return plus()
@@ -32,7 +32,7 @@ func parse_word_as_op(word string) IArg {
 	default:
 		i, e := strconv.ParseInt(word, 10, 64)
 		if e != nil {
-			GorthError("Failed to convert '" + word + "' to an integer")
+			GorthError("Failed to convert '"+word+"' to an integer", line)
 		}
 		return push(int(i))
 	}
