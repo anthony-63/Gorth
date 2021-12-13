@@ -1,0 +1,38 @@
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func usage() {
+	fmt.Println("Usage: " + os.Args[0] + "<SUBCOMMAND> <ARGS>")
+	fmt.Println("    SUBCOMMAND:")
+	fmt.Println("	 	run <file>    Run the gxml file")
+	fmt.Println("		com <file>    Compile gorth to gxml")
+}
+func main() {
+	if len(os.Args) <= 1 {
+		usage()
+		GorthError("No subcommand is provided")
+	}
+	switch os.Args[1] {
+	case "run":
+		if len(os.Args) < 2 {
+			usage()
+			GorthError("No input file provided for run")
+		}
+		prog := loadgxml(os.Args[2])
+		run(prog)
+	case "com":
+		if len(os.Args) < 2 {
+			usage()
+			GorthError("No input file provided for com")
+		}
+		prog := loadfile(os.Args[2])
+		compile(prog, "out.gxml")
+	default:
+		usage()
+		GorthError("Invalid command provided")
+	}
+}
